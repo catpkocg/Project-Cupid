@@ -1,0 +1,3 @@
+[submodule "Assets/Submodules/Core"]
+	path = Assets/Submodules/Core
+	url = https://github.com/waywaystudio/Core
