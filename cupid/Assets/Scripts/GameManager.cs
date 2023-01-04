@@ -1,25 +1,86 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Wayway.Engine.Singleton;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoSingleton<GameManager>
 {
-    public GameObject red;
-    public GameObject green;
-    public GameObject blue;
-
+    [SerializeField] private SpawnAndDelete spawnAndDelete;
+    [SerializeField] private Interaction interaction;
+    
+    public States State { get; set; }
     // Start is called before the first frame update
     void Start()
     {
-        Instantiate(red, new Vector3(0, 0, 0), Quaternion.identity);
-        Instantiate(green, new Vector3(0, 1, 0), Quaternion.identity);
-        Instantiate(blue, new Vector3(0, 2, 0), Quaternion.identity);
-        
+        State = States.ReadyForInteraction;
+        Map.Instance.CreateHexGround();
+        spawnAndDelete.SpawnBlock();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetMouseButtonDown(0))
+        {
+            interaction.FindWhereDidClick();
+        }
         
+        switch (State)
+        {
+            case States.ReadyForInteraction:
+                
+                break;
+            case States.MergeBlock:
+                
+                break;
+            case States.DeleteBlock:
+                
+                break;
+            case States.CreateNewBlock:
+                
+                break;
+            case States.DownNewBlock:
+                
+                break;
+            
+            case States.FindWhatCanMerge:
+                
+                break;
+        }
     }
+    
+    // public bool IsThereMovingBlock
+    // {
+    //     get
+    //     {
+    //         for (int i = 0; i < Map.Width; i++)
+    //         {
+    //             for (int j = 0; j < Map.Height; j++)
+    //             {
+    //                 var currPang = Map.Matrix[i,j];
+    //                 if (currPang.isMoving)
+    //                 {
+    //                     return true;
+    //                 }
+    //             }
+    //         }
+    //         return false;
+    //     }
+    // }
+    
+
+    public void ChangeState(States stateType)
+    {
+        State = stateType;
+    }
+}
+
+public enum States
+{
+    ReadyForInteraction,
+    FindWhatCanMerge,
+    MergeBlock,
+    DeleteBlock,
+    CreateNewBlock,
+    DownNewBlock,
 }
