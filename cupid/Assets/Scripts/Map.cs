@@ -23,12 +23,6 @@ public class Map : MonoSingleton<Map>
     //AroundPosition six, Scriptable object
     public AroundData aroundData;
 
-    
-    
-    
-    
-    
-    
     //배경 생성후 좌표 저장
     public void CreateHexGround()
     {
@@ -152,9 +146,7 @@ public class Map : MonoSingleton<Map>
 
     
 
-
-
-    private bool Boundary(Vector2Int pos)
+    public bool Boundary(Vector2Int pos)
     {
         if (pos.y % 2 == 0)
         {

@@ -20,59 +20,61 @@ public class GameManager : MonoSingleton<GameManager>
     // Update is called once per frame
     void Update()
     {
-        
-
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Debug.Log(State);
+        }
+        
+        if (Input.GetMouseButtonDown(1))
+        {
+            var plane = new Plane();
+            plane.Set3Points(Vector3.zero, Vector3.up, Vector3.right);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (plane.Raycast(ray, out var enter))
+            {
+                
+                Vector3 hitPoint = ray.GetPoint(enter);
+        
+                var grid = Map.Instance.GetComponent<Grid>();
+                var cellCoord = grid.WorldToCell(hitPoint);
+                var clickedBlock = Map.Instance.matrix[cellCoord.x, cellCoord.y];
+                Debug.Log(cellCoord);
+                Debug.Log(Map.Instance.matrix[cellCoord.x, cellCoord.y]);
+
+            }
         }
         
         switch (State)
         {
             case States.ReadyForInteraction:
                 interaction.ClickForMerge();
-                break;
-            case States.MergeBlock:
                 
                 break;
             case States.DeleteBlock:
                 interaction.DeleteMergedObj(interaction.sameBlocks);
+                Debug.Log("delete");
                 State = States.CreateNewBlock;
+                
                 break;
             case States.CreateNewBlock:
-                spawnAndDelete.CreateNewBlockForEmptyPlace();
+                spawnAndDelete.CreateNewBlockForEmptyPlaceAndCheckTarget();
+                Debug.Log("create");
+                State = States.CheckTarget;
+                break;
+            case States.CheckTarget:
+                spawnAndDelete.CheckTarget();
+                Debug.Log("check");
                 State = States.DownNewBlock;
                 break;
             case States.DownNewBlock:
-
-                State = States.ReadyForInteraction;
+                spawnAndDelete.MoveAllBlocks();
+                State = States.Waiting;
                 break;
-            case States.FindWhatCanMerge:
-                
+            case States.Waiting:
+                //Debug.Log("기달리는중");
                 break;
         }
     }
-    
-    // public bool IsThereMovingBlock
-    // {
-    //     get
-    //     {
-    //         for (int i = 0; i < Map.Width; i++)
-    //         {
-    //             for (int j = 0; j < Map.Height; j++)
-    //             {
-    //                 var currPang = Map.Matrix[i,j];
-    //                 if (currPang.isMoving)
-    //                 {
-    //                     return true;
-    //                 }
-    //             }
-    //         }
-    //         return false;
-    //     }
-    // }
-    
-
     public void ChangeState(States stateType)
     {
         State = stateType;
@@ -82,8 +84,8 @@ public class GameManager : MonoSingleton<GameManager>
 public enum States
 {
     ReadyForInteraction,
-    FindWhatCanMerge,
-    MergeBlock,
+    CheckTarget,
+    Waiting,
     DeleteBlock,
     CreateNewBlock,
     DownNewBlock,
