@@ -20,29 +20,33 @@ public class GameManager : MonoSingleton<GameManager>
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        
+
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            interaction.FindWhereDidClick();
+            Debug.Log(State);
         }
         
         switch (State)
         {
             case States.ReadyForInteraction:
-                
+                interaction.ClickForMerge();
                 break;
             case States.MergeBlock:
                 
                 break;
             case States.DeleteBlock:
-                
+                interaction.DeleteMergedObj(interaction.sameBlocks);
+                State = States.CreateNewBlock;
                 break;
             case States.CreateNewBlock:
-                
+                spawnAndDelete.CreateNewBlockForEmptyPlace();
+                State = States.DownNewBlock;
                 break;
             case States.DownNewBlock:
-                
+
+                State = States.ReadyForInteraction;
                 break;
-            
             case States.FindWhatCanMerge:
                 
                 break;

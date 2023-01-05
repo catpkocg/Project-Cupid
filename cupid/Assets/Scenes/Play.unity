@@ -167,6 +167,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cec0c1b8def87734f93b1d93436362e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawn: {fileID: 1155241192}
+  sameBlocks: []
+  posForCreate: []
 --- !u!1 &227458677
 GameObject:
   m_ObjectHideFlags: 0
@@ -523,6 +526,9 @@ MonoBehaviour:
   cell: {fileID: 4479736357577860581, guid: c3b6a42af7c1ec0469f47c2af5f37bbd, type: 3}
   cellBase: {fileID: 227458677}
   cam: {fileID: 963194225}
+  deletedPos: []
+  gridCanvas: {fileID: 0}
+  label: {fileID: 0}
   aroundData: {fileID: 11400000, guid: 4918b960b914ab9478e35374dfd41e6f, type: 2}
 --- !u!156049354 &1099817076
 Grid:
@@ -581,15 +587,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   threeKindsOfBlock:
-  - {fileID: 8303364156987656529, guid: 7f3a6b320eacb7c4dac679cc2bc9b443, type: 3}
-  - {fileID: -7839433318169769671, guid: 91163b15704d0b54384d66460df53e4b, type: 3}
-  - {fileID: -1446021174066801867, guid: f221891fda4e6aa448b7400b5ca87561, type: 3}
+  - {fileID: 8716640361098422491, guid: 54cebd18132231646a14cea500905131, type: 3}
+  - {fileID: 8716640361098422491, guid: f04b4d443598f3c42bc7b3b8e57c6a7e, type: 3}
+  - {fileID: 8716640361098422491, guid: 2361f863ce93ba947a66de1263db290c, type: 3}
   fourKindsOfBlock:
-  - {fileID: 8303364156987656529, guid: 7f3a6b320eacb7c4dac679cc2bc9b443, type: 3}
-  - {fileID: -7839433318169769671, guid: 91163b15704d0b54384d66460df53e4b, type: 3}
-  - {fileID: -1446021174066801867, guid: f221891fda4e6aa448b7400b5ca87561, type: 3}
-  - {fileID: -1486991242208996068, guid: bf68f0126848061478dc2281085784f6, type: 3}
+  - {fileID: 8716640361098422491, guid: 54cebd18132231646a14cea500905131, type: 3}
+  - {fileID: 8716640361098422491, guid: f04b4d443598f3c42bc7b3b8e57c6a7e, type: 3}
+  - {fileID: 8716640361098422491, guid: 2361f863ce93ba947a66de1263db290c, type: 3}
+  - {fileID: 8716640361098422491, guid: 435deea20c0a1db4597c74b172f2798d, type: 3}
   blockBase: {fileID: 595590237}
+  allBlock: []
 --- !u!1 &1179571580
 GameObject:
   m_ObjectHideFlags: 0

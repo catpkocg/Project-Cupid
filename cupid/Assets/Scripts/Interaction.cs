@@ -1,27 +1,79 @@
     using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+    using DG.Tweening;
+    using TMPro;
+    using UnityEngine;
 
 public class Interaction : MonoBehaviour
 {
-    
+    [SerializeField] private SpawnAndDelete spawn;
     //for calculate click number because create 4 block after 20times click
     private int clickCounter;
+    public List<Block> sameBlocks;
+    public List<Vector3> posForCreate;
     
-    public void FindWhereDidClick()
+    public void ClickForMerge()
     {
-        var plane = new Plane();
-        plane.Set3Points(Vector3.zero, Vector3.up, Vector3.right);
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (plane.Raycast(ray, out var enter))
+        if (Input.GetMouseButtonDown(0))
         {
-            Vector3 hitPoint = ray.GetPoint(enter);
-            
-            var grid = Map.Instance.GetComponent<Grid>();
-            var cellCoord = grid.WorldToCell(hitPoint);
-            Debug.Log(cellCoord);
-            Debug.Log(Map.Instance.matrix[cellCoord.x,cellCoord.y]);
+            sameBlocks = new List<Block>();
+            var plane = new Plane();
+            plane.Set3Points(Vector3.zero, Vector3.up, Vector3.right);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (plane.Raycast(ray, out var enter))
+            {
+                
+                Vector3 hitPoint = ray.GetPoint(enter);
+        
+                var grid = Map.Instance.GetComponent<Grid>();
+                var cellCoord = grid.WorldToCell(hitPoint);
+                var clickedBlock = Map.Instance.matrix[cellCoord.x, cellCoord.y];
+                //Debug.Log(cellCoord);
+                //Debug.Log(Map.Instance.matrix[cellCoord.x, cellCoord.y].Coord);
+                var targetPos = grid.GetCellCenterWorld(cellCoord);
+
+                sameBlocks = Map.Instance.FindAllNearSameValue(clickedBlock);
+                
+                Merge(sameBlocks,targetPos);
+            }
         }
     }
+
+    public void Merge(List<Block> allSameBlock,Vector3 target)
+    {
+        var sequenceAnim = DOTween.Sequence();
+        for (int i = 0; i < allSameBlock.Count; i++)
+        {
+            sequenceAnim.Join(allSameBlock[i].transform.DOMove(target, 0.5f).SetEase(Ease.OutCubic));
+            //Debug.Log(allSameBlock[i].Coord);
+        }
+        
+        sequenceAnim.OnComplete(() => GameManager.Instance.ChangeState(States.DeleteBlock));
+        //Debug.Log(allSameBlock.Count + " 머지 zkdnsxm");
+
+    }
+
+    public void DeleteMergedObj(List<Block> allSameBlock)
+    {
+        Map.Instance.deletedPos = new List<Vector2Int>();
+        var clickedBlockValue = allSameBlock[0].score;
+        
+        //Debug.Log(allSameBlock.Count);
+        for (int i = allSameBlock.Count-1; i > 0; i--)
+        {
+            Destroy(Map.Instance.matrix[allSameBlock[i].Coord.x, allSameBlock[i].Coord.y].gameObject);
+            spawn.allBlock.Remove(Map.Instance.matrix[allSameBlock[i].Coord.x, allSameBlock[i].Coord.y]);
+            Map.Instance.deletedPos.Add(new Vector2Int(allSameBlock[i].Coord.x, allSameBlock[i].Coord.y));
+            clickedBlockValue += allSameBlock[i].score;
+            //Debug.Log(allSameBlock[i].score + "이거는" + i + "얘꺼");
+        }
+
+        allSameBlock[0].GetComponentInChildren<TextMeshPro>().text = clickedBlockValue.ToString();
+        //Debug.Log(Map.Instance.deletedPos.Count);
+        
+    }
+    
+    
+    
 }

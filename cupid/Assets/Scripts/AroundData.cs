@@ -12,6 +12,6 @@ public class AroundData : ScriptableObject
 [Serializable]
 public class Around
 {
-    public Vector3 aroundOneCoord;
-    public Vector3 aroundTwoCoord;
+    public Vector2Int aroundOneCoord;
+    public Vector2Int aroundTwoCoord;
 }
