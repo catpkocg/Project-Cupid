@@ -11,6 +11,9 @@ public class Map : MonoSingleton<Map>
     [SerializeField] public GameObject cell;
     [SerializeField] public GameObject cellBase;
     [SerializeField] private GameObject cam;
+
+    public GameConfig Config;
+    
     public Block[,] matrix = new Block[7,7];
 
     public List<Vector2Int> deletedPos; 
@@ -23,30 +26,32 @@ public class Map : MonoSingleton<Map>
     //AroundPosition six, Scriptable object
     public AroundData aroundData;
 
+    public void Setup()
+    {
+        matrix = new Block[Config.GridSize.y, Config.GridSize.x];
+        CreateHexGround();
+    }
     //배경 생성후 좌표 저장
     public void CreateHexGround()
     {
         var grid = GetComponent<Grid>();
-        for (var j = 0; j < 7; j++)
+        
+        for (var j = 0; j < Config.GridSize.x; j++)
         {
-            if (j % 2 == 0)
+            var height = Config.GridSize.y + (j % 2 == 0 ? 0 : -1);
+            for (var i = 0; i < height; i++)
             {
-                for (var i = 0; i < 7; i++)
-                {
-                    CellBackGroundCreate(grid, i, j);
-                }
-            }
-            else
-            {
-                for (var i = 0; i < 6; i++)
-                {
-                    CellBackGroundCreate(grid, i, j);
-                }
+                CellBackGroundCreate(grid, i, j);
             }
         }
-        cam.transform.position = new Vector3((float)8 / 4f, (float)8 / 4f, -20);
-        //gridCanvas.transform.position = new Vector3((float)8 / 4f, (float)8 / 4f, -20);
-        //label.transform.position = new Vector3(0, 0, 0);
+
+        var widthCam = Config.GridSize.x / 2 * 0.75f;
+        var heightCam = Config.GridSize.y / 2 * 0.8659766f;
+        cam.transform.position = new Vector3(widthCam, heightCam, -20);
+        
+        var wantedWidthCamDist = Config.GridSize.x / 2f;
+        Camera.main.orthographicSize = wantedWidthCamDist * (float)Screen.height / Screen.width;
+
     }
     
     private void CellBackGroundCreate(Grid grid, int x, int y)
@@ -120,10 +125,10 @@ public class Map : MonoSingleton<Map>
                 var neibor = block.Coord + aroundData.around[i].aroundOneCoord;
                 if (Boundary(neibor))
                 {
-                    var neiborValue = matrix[neibor.x, neibor.y];
+                    var neiborValue = matrix[neibor.y, neibor.x];
                     if (neiborValue != null && neiborValue.value == block.value)
                     {
-                        sameBlockList.Add(matrix[neibor.x,neibor.y]);
+                        sameBlockList.Add(matrix[neibor.y,neibor.x]);
                     }
                 }
             }
@@ -132,10 +137,10 @@ public class Map : MonoSingleton<Map>
                 var neibor = block.Coord + aroundData.around[i].aroundTwoCoord;
                 if (Boundary(neibor))
                 {
-                    var neiborValue = matrix[neibor.x, neibor.y];
+                    var neiborValue = matrix[neibor.y, neibor.x];
                     if (neiborValue != null && neiborValue.value == block.value)
                     {
-                        sameBlockList.Add(matrix[neibor.x,neibor.y]);
+                        sameBlockList.Add(matrix[neibor.y,neibor.x]);
                     }
                 }
                 
@@ -148,25 +153,15 @@ public class Map : MonoSingleton<Map>
 
     public bool Boundary(Vector2Int pos)
     {
-        if (pos.y % 2 == 0)
+        var width = Config.GridSize.x;
+        var height = Config.GridSize.y + (pos.y % 2 == 0 ? 0 : -1);
+        
+        if (pos.x < 0 || pos.x > height || pos.y > width || pos.y < 0)
         {
-            if (pos.x < 0 || pos.x > 6 || pos.y > 6 || pos.y < 0)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            if (pos.x < 0 || pos.x > 5 || pos.y > 6 || pos.y < 0)
-            {
-                return false;
-            }
+            return false;
         }
 
         return true;
     }
-    
-    
-    
     
 }

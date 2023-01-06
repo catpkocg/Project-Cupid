@@ -526,6 +526,7 @@ MonoBehaviour:
   cell: {fileID: 4479736357577860581, guid: c3b6a42af7c1ec0469f47c2af5f37bbd, type: 3}
   cellBase: {fileID: 227458677}
   cam: {fileID: 963194225}
+  Config: {fileID: 11400000, guid: 4d3cd7015cde47940bc770f4b6b211ab, type: 2}
   deletedPos: []
   gridCanvas: {fileID: 0}
   label: {fileID: 0}
@@ -587,9 +588,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   threeKindsOfBlock:
-  - {fileID: 8716640361098422491, guid: 54cebd18132231646a14cea500905131, type: 3}
   - {fileID: 8716640361098422491, guid: f04b4d443598f3c42bc7b3b8e57c6a7e, type: 3}
   - {fileID: 8716640361098422491, guid: 2361f863ce93ba947a66de1263db290c, type: 3}
+  - {fileID: 8716640361098422491, guid: 54cebd18132231646a14cea500905131, type: 3}
+  - {fileID: 8716640361098422491, guid: 435deea20c0a1db4597c74b172f2798d, type: 3}
+  - {fileID: 8716640361098422491, guid: f4b58bf40a43af74680d088f36ae91f7, type: 3}
+  - {fileID: 8716640361098422491, guid: 0c562713521b7ae438eebd1076cd2047, type: 3}
+  - {fileID: 8716640361098422491, guid: 75db563f4df1e6f4ca9500f232f0f784, type: 3}
+  - {fileID: 8716640361098422491, guid: 92d87cfd85818fe46b56281ba634b107, type: 3}
+  - {fileID: 8716640361098422491, guid: 0b3d79aae49728d47a950945c475b532, type: 3}
+  - {fileID: 8716640361098422491, guid: 7d68a349d1430f549ad4a1b1f3929ccf, type: 3}
   fourKindsOfBlock:
   - {fileID: 8716640361098422491, guid: 54cebd18132231646a14cea500905131, type: 3}
   - {fileID: 8716640361098422491, guid: f04b4d443598f3c42bc7b3b8e57c6a7e, type: 3}
@@ -597,6 +605,9 @@ MonoBehaviour:
   - {fileID: 8716640361098422491, guid: 435deea20c0a1db4597c74b172f2798d, type: 3}
   blockBase: {fileID: 595590237}
   allBlock: []
+  newBlocks: []
+  newBlocksPos: []
+  allBlockTarget: []
 --- !u!1 &1179571580
 GameObject:
   m_ObjectHideFlags: 0

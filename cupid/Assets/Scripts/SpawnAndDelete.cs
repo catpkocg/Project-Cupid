@@ -24,21 +24,12 @@ public class SpawnAndDelete : MonoBehaviour
     {
         //var mapLocation = Map.Instance.matrix;
         var grid = Map.Instance.GetComponent<Grid>();
-        for (var j = 0; j < 7; j++)
+        for (var j = 0; j < Map.Instance.Config.GridSize.x; j++)
         {
-            if (j % 2 == 0)
+            var height = Map.Instance.Config.GridSize.y + (j % 2 == 0 ? 0 : -1);
+            for (var i = 0; i < height; i++)
             {
-                for (var i = 0; i < 7; i++)
-                {
-                    CreateThreeKindsOfBlock(grid,i,j);
-                }
-            }
-            else
-            {
-                for (var i = 0; i < 6; i++)
-                {
-                    CreateThreeKindsOfBlock(grid,i,j);
-                }
+                SpawnRandomBlock(grid,i,j, Map.Instance.Config.BlockCount);
             }
         }
     }
@@ -49,38 +40,22 @@ public class SpawnAndDelete : MonoBehaviour
         newBlocksPos = new List<Vector2Int>();
         var grid = Map.Instance.GetComponent<Grid>();
         var deletedPos = Map.Instance.deletedPos;
-        for (var j = 0; j < 7; j++)
+        for (var j = 0; j < Map.Instance.Config.GridSize.x; j++)
         {
-            if (j % 2 == 0)
+            var height = Map.Instance.Config.GridSize.y + (j % 2 == 0 ? 0 : -1);
+            var currentLineNullNum = CalCuNullNum(new Vector2Int(height, j));
+            for (var i = 0; i < currentLineNullNum; i++)
             {
-                var currentLineNullNum = CalCuNullNum(new Vector2Int(7, j));
-                for (var i = 0; i < currentLineNullNum; i++)
-                {
-                    var random = Random.Range(0, 3);
-                    var pos = grid.GetCellCenterWorld(new Vector3Int(7+i, j, 0));
-                    var block = Instantiate(threeKindsOfBlock[random], pos, Quaternion.identity);
-                    newBlocks.Add(block);
-                    newBlocksPos.Add(new Vector2Int((7+i) - currentLineNullNum,j));
-                    block.transform.SetParent(blockBase.transform);
-                    //Debug.Log(new Vector2Int((7+i) - currentLineNullNum,j) + " 짝수일때");
-                    //Debug.Log(currentLineNullNum);
-                }
+                var random = Random.Range(0, Map.Instance.Config.BlockCount);
+                var pos = grid.GetCellCenterWorld(new Vector3Int(height+i, j, 0));
+                var block = Instantiate(threeKindsOfBlock[random], pos, Quaternion.identity);
+                newBlocks.Add(block);
+                newBlocksPos.Add(new Vector2Int((height+i) - currentLineNullNum,j));
+                block.transform.SetParent(blockBase.transform);
+                //Debug.Log(new Vector2Int((7+i) - currentLineNullNum,j) + " 짝수일때");
+                //Debug.Log(currentLineNullNum);
             }
-            else
-            {
-                var currentLineNullNum = CalCuNullNum(new Vector2Int(6, j));
-                for (var i = 0; i < currentLineNullNum; i++)
-                {
-                    var random = Random.Range(0, 3);
-                    var pos = grid.GetCellCenterWorld(new Vector3Int(6+i, j, 0));
-                    var block = Instantiate(threeKindsOfBlock[random], pos, Quaternion.identity);
-                    newBlocks.Add(block);
-                    newBlocksPos.Add(new Vector2Int((6+i) - currentLineNullNum,j));
-                    block.transform.SetParent(blockBase.transform);
-                    //Debug.Log(new Vector2Int((6+i) - currentLineNullNum,j) + " 홀수일때");
-                }
             }
-        }
     }
 
     public void CheckTarget()
@@ -169,9 +144,9 @@ public class SpawnAndDelete : MonoBehaviour
         return nullNum;
     }
 
-    private void CreateThreeKindsOfBlock(Grid grid, int x, int y)
+    private void SpawnRandomBlock(Grid grid, int x, int y, int randomCount)
     {
-        var random = Random.Range(0, 3);
+        var random = Random.Range(0, randomCount);
         var pos = grid.GetCellCenterWorld(new Vector3Int(x, y, 0));
         var block = Instantiate(threeKindsOfBlock[random], pos, Quaternion.identity);
         allBlock.Add(block);
@@ -180,17 +155,4 @@ public class SpawnAndDelete : MonoBehaviour
         Map.Instance.matrix[x, y] = block;
         
     }
-    
-    private void CreateFourKindsOfBlock(Grid grid, int x, int y)
-    {
-        var random = Random.Range(0, 4);
-        var pos = grid.GetCellCenterWorld(new Vector3Int(x, y, 0));
-        var block = Instantiate(fourKindsOfBlock[random], pos, Quaternion.identity);
-        block.transform.SetParent(blockBase.transform);
-        block.Coord = new Vector2Int(x, y);
-        Map.Instance.matrix[x, y] = block;
-    }
-    
-    
-    
 }

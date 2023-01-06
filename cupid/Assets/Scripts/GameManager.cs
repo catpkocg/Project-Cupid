@@ -9,16 +9,17 @@ public class GameManager : MonoSingleton<GameManager>
     [SerializeField] private Interaction interaction;
     
     public States State { get; set; }
-    // Start is called before the first frame update
-    void Start()
+
+    private void Start()
     {
         State = States.ReadyForInteraction;
-        Map.Instance.CreateHexGround();
+        //매트릭스 사이즈 설정하고
+        //매트릭스 사이즈에 따라 맵 배경 깐다.
+        Map.Instance.Setup();
         spawnAndDelete.SpawnBlock();
     }
-
-    // Update is called once per frame
-    void Update()
+   
+    private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -83,6 +84,7 @@ public class GameManager : MonoSingleton<GameManager>
 
 public enum States
 {
+    None = 0,
     ReadyForInteraction,
     CheckTarget,
     Waiting,
