@@ -16,9 +16,21 @@ PrefabInstance:
       value: Block_4
       objectReference: {fileID: 0}
     - target: {fileID: 5445883908741688313, guid: f221891fda4e6aa448b7400b5ca87561, type: 3}
+      propertyPath: m_Size.x
+      value: 1.024
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445883908741688313, guid: f221891fda4e6aa448b7400b5ca87561, type: 3}
+      propertyPath: m_Size.y
+      value: 1.024
+      objectReference: {fileID: 0}
+    - target: {fileID: 5445883908741688313, guid: f221891fda4e6aa448b7400b5ca87561, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300008, guid: 8199c5ef781b3b842a2432aad7077b72, type: 3}
+      objectReference: {fileID: 904129733, guid: 8199c5ef781b3b842a2432aad7077b72, type: 3}
+    - target: {fileID: 5445883908741688313, guid: f221891fda4e6aa448b7400b5ca87561, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5520516652855318961, guid: f221891fda4e6aa448b7400b5ca87561, type: 3}
       propertyPath: m_Sprite
       value: 
