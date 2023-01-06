@@ -24,9 +24,9 @@ public class SpawnAndDelete : MonoBehaviour
     {
         //var mapLocation = Map.Instance.matrix;
         var grid = Map.Instance.GetComponent<Grid>();
-        for (var j = 0; j < Map.Instance.Config.GridSize.x; j++)
+        for (var j = 0; j < Map.Instance.Config.GridSize.y; j++)
         {
-            var height = Map.Instance.Config.GridSize.y + (j % 2 == 0 ? 0 : -1);
+            var height = Map.Instance.Config.GridSize.x + (j % 2 == 0 ? 0 : -1);
             for (var i = 0; i < height; i++)
             {
                 SpawnRandomBlock(grid,i,j, Map.Instance.Config.BlockCount);

@@ -23,7 +23,21 @@ public class GameManager : MonoSingleton<GameManager>
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log(State);
+            //Debug.Log(State);
+            Debug.Log(Map.Instance.Config.GridSize.x);
+            Debug.Log(Map.Instance.Config.GridSize.y);
+            //Debug.Log(Map.Instance.matrix[0,1]);
+            for (int i = 0; i < Map.Instance.Config.GridSize.x; i++)
+            {
+                for (int j = 0; j < Map.Instance.Config.GridSize.y; j++)
+                {
+                    if (Map.Instance.Boundary(Map.Instance.matrix[i, j].Coord))
+                    {
+                        Debug.Log(i +"ddd" + j);
+                    }
+                }
+            }
+            
         }
         
         if (Input.GetMouseButtonDown(1))
@@ -39,8 +53,9 @@ public class GameManager : MonoSingleton<GameManager>
                 var grid = Map.Instance.GetComponent<Grid>();
                 var cellCoord = grid.WorldToCell(hitPoint);
                 var clickedBlock = Map.Instance.matrix[cellCoord.x, cellCoord.y];
-                Debug.Log(cellCoord);
+                //Debug.Log(cellCoord);
                 Debug.Log(Map.Instance.matrix[cellCoord.x, cellCoord.y]);
+                Debug.Log(Map.Instance.matrix[cellCoord.x, cellCoord.y].Coord);
 
             }
         }

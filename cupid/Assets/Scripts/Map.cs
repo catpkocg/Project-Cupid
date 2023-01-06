@@ -14,7 +14,7 @@ public class Map : MonoSingleton<Map>
 
     public GameConfig Config;
     
-    public Block[,] matrix = new Block[7,7];
+    public Block[,] matrix;
 
     public List<Vector2Int> deletedPos; 
     
@@ -30,6 +30,7 @@ public class Map : MonoSingleton<Map>
     {
         matrix = new Block[Config.GridSize.y, Config.GridSize.x];
         CreateHexGround();
+
     }
     //배경 생성후 좌표 저장
     public void CreateHexGround()
@@ -56,14 +57,9 @@ public class Map : MonoSingleton<Map>
     
     private void CellBackGroundCreate(Grid grid, int x, int y)
     {
-        
         var pos = grid.GetCellCenterWorld(new Vector3Int(x, y, 0));
         var hexCell = Instantiate(cell, pos, Quaternion.identity);
-        //var hexLabel = Instantiate<Text>(label, pos, Quaternion.identity);
-        //hexLabel.rectTransform.SetParent(gridCanvas.transform, false);
-        //hexLabel.rectTransform.anchoredPosition = new Vector2(x, y);
         hexCell.transform.SetParent(cellBase.transform);
-        
     }
 
     public List<Block> FindAllNearSameValue(Block block)
@@ -123,24 +119,25 @@ public class Map : MonoSingleton<Map>
             if (block.Coord.y % 2 == 0)
             {
                 var neibor = block.Coord + aroundData.around[i].aroundOneCoord;
+                
                 if (Boundary(neibor))
                 {
-                    var neiborValue = matrix[neibor.y, neibor.x];
+                    var neiborValue = matrix[neibor.x, neibor.y];
                     if (neiborValue != null && neiborValue.value == block.value)
                     {
-                        sameBlockList.Add(matrix[neibor.y,neibor.x]);
+                        sameBlockList.Add(matrix[neibor.x,neibor.y]);
                     }
                 }
             }
             else
             {
                 var neibor = block.Coord + aroundData.around[i].aroundTwoCoord;
-                if (Boundary(neibor))
+                if (Boundary(neibor) && matrix[neibor.x,neibor.y] != null)
                 {
-                    var neiborValue = matrix[neibor.y, neibor.x];
+                    var neiborValue = matrix[neibor.x, neibor.y];
                     if (neiborValue != null && neiborValue.value == block.value)
                     {
-                        sameBlockList.Add(matrix[neibor.y,neibor.x]);
+                        sameBlockList.Add(matrix[neibor.x,neibor.y]);
                     }
                 }
                 
@@ -154,9 +151,9 @@ public class Map : MonoSingleton<Map>
     public bool Boundary(Vector2Int pos)
     {
         var width = Config.GridSize.x;
-        var height = Config.GridSize.y + (pos.y % 2 == 0 ? 0 : -1);
+        var height = Config.GridSize.y + (Config.GridSize.y % 2 == 0 ? 0 : -1);
         
-        if (pos.x < 0 || pos.x > height || pos.y > width || pos.y < 0)
+        if (pos.x < 0 || pos.x > width || pos.y > height || pos.y < 0)
         {
             return false;
         }
