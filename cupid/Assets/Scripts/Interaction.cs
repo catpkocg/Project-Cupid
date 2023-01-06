@@ -3,12 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
     using DG.Tweening;
     using TMPro;
-    using Unity.VisualScripting;
     using UnityEngine;
 
     public class Interaction : MonoBehaviour
 {
     [SerializeField] private SpawnAndDelete spawn;
+
+
+    public Vector2Int catfootPos;
+    public Vector2Int catkingPos;
+    
+    private List<Block> deletePalce;
     //for calculate click number because create 4 block after 20times click
     private int clickCounter = 0;
     public List<Block> sameBlocks;
@@ -24,33 +29,34 @@ using System.Collections.Generic;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (plane.Raycast(ray, out var enter))
             {
-                //Debug.Log(enter);
                 Vector3 hitPoint = ray.GetPoint(enter);
-                
-                //Debug.Log(hitPoint);
                 var grid = Map.Instance.GetComponent<Grid>();
                 var cellCoord = grid.WorldToCell(hitPoint);
-                Debug.Log(cellCoord);
-                Debug.Log(Map.Instance.Boundary(new Vector2Int(cellCoord.x, cellCoord.y)));
                 if (Map.Instance.Boundary(new Vector2Int(cellCoord.x, cellCoord.y)))
                 {
                     var clickedBlock = Map.Instance.matrix[cellCoord.x, cellCoord.y];
-                    //Debug.Log(cellCoord);
-                    //Debug.Log(Map.Instance.matrix[cellCoord.x, cellCoord.y].Coord);
                     var targetPos = grid.GetCellCenterWorld(cellCoord);
                     sameBlocks = Map.Instance.FindAllNearSameValue(clickedBlock);
-                    
-                    if (sameBlocks.Count > 1)
+
+                    if (clickedBlock.value != 100)
                     {
-                        GameManager.Instance.State = States.Waiting;
-                        Merge(sameBlocks,targetPos);
-                        clickCounter++;
+                        if (sameBlocks.Count > 1)
+                        {
+                            GameManager.Instance.State = States.Waiting;
+                            Merge(sameBlocks,targetPos);
+                            clickCounter++;
+                        }
+                        else
+                        {
+                            Debug.Log("합칠수없는곳 선택함");
+                            Debug.Log(sameBlocks.Count);
+                        }
                     }
                     else
                     {
-                        Debug.Log("합칠수없는곳 선택함");
-                        Debug.Log(sameBlocks.Count);
+                        Debug.Log("옮길수없음");
                     }
+
                 }
             }
         }
@@ -61,27 +67,56 @@ using System.Collections.Generic;
         for (int i = 0; i < allSameBlock.Count; i++)
         {
             sequenceAnim.Join(allSameBlock[i].transform.DOMove(target, 0.5f).SetEase(Ease.OutCubic));
-            //Debug.Log(allSameBlock[i].Coord);
         }
         
         sequenceAnim.OnComplete(() => GameManager.Instance.ChangeState(States.DeleteBlock));
-        //Debug.Log(allSameBlock.Count + " 머지 zkdnsxm");
     }
     public void DeleteMergedObj(List<Block> allSameBlock)
     {
+        deletePalce = new List<Block>();
         Map.Instance.deletedPos = new List<Vector2Int>();
         var clickedBlockValue = allSameBlock[0].score;
-        //Debug.Log(allSameBlock.Count);
-        for (int i = allSameBlock.Count-1; i > 0; i--)
+        if (allSameBlock[0].value == 99)
         {
-            Destroy(Map.Instance.matrix[allSameBlock[i].Coord.x, allSameBlock[i].Coord.y].gameObject);
-            spawn.allBlock.Remove(Map.Instance.matrix[allSameBlock[i].Coord.x, allSameBlock[i].Coord.y]);
-            Map.Instance.deletedPos.Add(new Vector2Int(allSameBlock[i].Coord.x, allSameBlock[i].Coord.y));
-            clickedBlockValue += allSameBlock[i].score;
-            //Debug.Log(allSameBlock[i].score + "이거는" + i + "얘꺼");
+            for (int i = allSameBlock.Count-1; i > 0; i--)
+            {
+                Destroy(Map.Instance.matrix[allSameBlock[i].Coord.x, allSameBlock[i].Coord.y].gameObject);
+                spawn.allBlock.Remove(Map.Instance.matrix[allSameBlock[i].Coord.x, allSameBlock[i].Coord.y]);
+                Map.Instance.deletedPos.Add(new Vector2Int(allSameBlock[i].Coord.x, allSameBlock[i].Coord.y));
+                clickedBlockValue += allSameBlock[i].score;
+            }
+            
+            catkingPos = allSameBlock[0].Coord;
+            Destroy(Map.Instance.matrix[allSameBlock[0].Coord.x, allSameBlock[0].Coord.y].gameObject);
+            spawn.allBlock.Remove(Map.Instance.matrix[allSameBlock[0].Coord.x, allSameBlock[0].Coord.y]);
+                
+            spawn.SpawnKingBlock(catkingPos,allSameBlock);
+            GameManager.Instance.score += allSameBlock.Count;
         }
-        allSameBlock[0].GetComponentInChildren<TextMeshPro>().text = clickedBlockValue.ToString();
-        allSameBlock[0].score = clickedBlockValue;
-        //Debug.Log(Map.Instance.deletedPos.Count);
+        else
+        {
+            for (int i = allSameBlock.Count-1; i > 0; i--)
+            {
+                Destroy(Map.Instance.matrix[allSameBlock[i].Coord.x, allSameBlock[i].Coord.y].gameObject);
+                spawn.allBlock.Remove(Map.Instance.matrix[allSameBlock[i].Coord.x, allSameBlock[i].Coord.y]);
+                Map.Instance.deletedPos.Add(new Vector2Int(allSameBlock[i].Coord.x, allSameBlock[i].Coord.y));
+                clickedBlockValue += allSameBlock[i].score;
+            }
+        
+            if (clickedBlockValue > Map.Instance.Config.AddMaxCount)
+            {
+                catfootPos = allSameBlock[0].Coord;
+                Destroy(Map.Instance.matrix[allSameBlock[0].Coord.x, allSameBlock[0].Coord.y].gameObject);
+                spawn.allBlock.Remove(Map.Instance.matrix[allSameBlock[0].Coord.x, allSameBlock[0].Coord.y]);
+                
+                spawn.SpawnFootBlock(catfootPos);
+            }
+            else
+            {
+                allSameBlock[0].GetComponentInChildren<TextMeshPro>().text = clickedBlockValue.ToString();
+                allSameBlock[0].score = clickedBlockValue;
+            }
+        }
+        
     }
 }

@@ -2,27 +2,25 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class SpawnAndDelete : MonoBehaviour
 {
     [SerializeField] private List<Block> threeKindsOfBlock;
-    [SerializeField] private List<Block> fourKindsOfBlock;
     [SerializeField] private GameObject blockBase;
-    public List<Block> allBlock = new List<Block>();
+    
+    [SerializeField] private Block catFoot;
+    [SerializeField] private Block catKing;
+    
+    public List<Block> allBlock;
     public List<Block> newBlocks;
     public List<Vector2Int> newBlocksPos;
     public List<Vector2Int> allBlockTarget;
-    private void Start()
-    {
-        //DOTween.SetTweensCapacity( 8000, 125 );
-        
-    }
 
     public void SpawnBlock()
     {
-        //var mapLocation = Map.Instance.matrix;
         var grid = Map.Instance.GetComponent<Grid>();
         for (var j = 0; j < Map.Instance.Config.GridSize.y; j++)
         {
@@ -52,8 +50,6 @@ public class SpawnAndDelete : MonoBehaviour
                 newBlocks.Add(block);
                 newBlocksPos.Add(new Vector2Int((height+i) - currentLineNullNum,j));
                 block.transform.SetParent(blockBase.transform);
-                //Debug.Log(new Vector2Int((7+i) - currentLineNullNum,j) + " 짝수일때");
-                //Debug.Log(currentLineNullNum);
             }
         }
     }
@@ -72,10 +68,8 @@ public class SpawnAndDelete : MonoBehaviour
     }
     
     
-
     public void MoveAllBlocks()
     {
-        Debug.Log("호출됨");
         var grid = Map.Instance.GetComponent<Grid>();
         var deletedPos = Map.Instance.deletedPos;
         
@@ -113,7 +107,6 @@ public class SpawnAndDelete : MonoBehaviour
 
     public void ChangeStatesForMove()
     {
-        Debug.Log("이거 안들어옴?");
         GameManager.Instance.State = States.ReadyForInteraction;
     }
 
@@ -153,6 +146,33 @@ public class SpawnAndDelete : MonoBehaviour
         block.transform.SetParent(blockBase.transform);
         block.Coord = new Vector2Int(x, y);
         Map.Instance.matrix[x, y] = block;
+    }
+
+    public void SpawnFootBlock(Vector2Int footPos)
+    {
+        var grid = Map.Instance.GetComponent<Grid>();
+        var pos = grid.GetCellCenterWorld(new Vector3Int(footPos.x, footPos.y, 0));
+        var block = Instantiate(catFoot, pos, Quaternion.identity);
+        allBlock.Add(block);
+        block.transform.SetParent(blockBase.transform);
+        Map.Instance.matrix[footPos.x, footPos.y] = block;
+        block.Coord = footPos;
+        block.value = 99;
+        block.score = 200000;
+    }
+
+    public void SpawnKingBlock(Vector2Int kingPos, List<Block> sameBlocks)
+    {
+        var grid = Map.Instance.GetComponent<Grid>();
+        var pos = grid.GetCellCenterWorld(new Vector3Int(kingPos.x, kingPos.y, 0));
+        var block = Instantiate(catKing, pos, Quaternion.identity);
+        allBlock.Add(block);
+        block.transform.SetParent(blockBase.transform);
+        Map.Instance.matrix[kingPos.x, kingPos.y] = block;
+        block.Coord = kingPos;
+        block.value = 100;
         
+        block.GetComponentInChildren<TextMeshPro>().text = sameBlocks.Count.ToString();
+        block.score = sameBlocks.Count * catFoot.value;
     }
 }

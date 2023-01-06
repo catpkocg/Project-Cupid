@@ -1,93 +1,45 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Wayway.Engine.Singleton;
 
 public class GameManager : MonoSingleton<GameManager>
 {
     [SerializeField] private SpawnAndDelete spawnAndDelete;
     [SerializeField] private Interaction interaction;
+    [SerializeField] private TextMeshProUGUI scoreText;
+    public int score;
     
     public States State { get; set; }
 
     private void Start()
     {
         State = States.ReadyForInteraction;
-        //매트릭스 사이즈 설정하고
-        //매트릭스 사이즈에 따라 맵 배경 깐다.
         Map.Instance.Setup();
         spawnAndDelete.SpawnBlock();
+        score = 0;
     }
    
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            //Debug.Log(State);
-            //Debug.Log(Map.Instance.Config.GridSize.x);
-            //Debug.Log(Map.Instance.Config.GridSize.y);
-            //Debug.Log(Map.Instance.matrix[0,1]);
-            // for (int i = 0; i < Map.Instance.Config.GridSize.x; i++)
-            // {
-            //     for (int j = 0; j < Map.Instance.Config.GridSize.y; j++)
-            //     {
-            //         if (Map.Instance.Boundary(Map.Instance.matrix[i, j].Coord))
-            //         {
-            //             Debug.Log(i +"ddd" + j);
-            //         }
-            //     }
-            // }
-
-            Debug.Log(Map.Instance.Boundary(new Vector2Int(7, 4)));
-            Debug.Log(Map.Instance.Boundary(new Vector2Int(6, 3)));
-            Debug.Log(Map.Instance.Boundary(new Vector2Int(7, 2)));
-            Debug.Log(Map.Instance.Boundary(new Vector2Int(6, 1)));
-            Debug.Log(Map.Instance.Boundary(new Vector2Int(7, 0)));
-            Debug.Log(Map.Instance.Boundary(new Vector2Int(6, 5)));
-            Debug.Log(Map.Instance.Boundary(new Vector2Int(7, 6)));
-
-        }
-        
-        if (Input.GetMouseButtonDown(1))
-        {
-            var plane = new Plane();
-            plane.Set3Points(Vector3.zero, Vector3.up, Vector3.right);
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (plane.Raycast(ray, out var enter))
-            {
-                
-                Vector3 hitPoint = ray.GetPoint(enter);
-        
-                var grid = Map.Instance.GetComponent<Grid>();
-                var cellCoord = grid.WorldToCell(hitPoint);
-                var clickedBlock = Map.Instance.matrix[cellCoord.x, cellCoord.y];
-                //Debug.Log(cellCoord);
-                Debug.Log(Map.Instance.matrix[cellCoord.x, cellCoord.y]);
-                Debug.Log(Map.Instance.matrix[cellCoord.x, cellCoord.y].Coord);
-
-            }
-        }
-        
+        scoreText.text = score.ToString();
         switch (State)
         {
             case States.ReadyForInteraction:
                 interaction.ClickForMerge();
-                
                 break;
             case States.DeleteBlock:
                 interaction.DeleteMergedObj(interaction.sameBlocks);
-                Debug.Log("delete");
                 State = States.CreateNewBlock;
-                
                 break;
             case States.CreateNewBlock:
                 spawnAndDelete.CreateNewBlockForEmptyPlaceAndCheckTarget();
-                Debug.Log("create");
                 State = States.CheckTarget;
                 break;
             case States.CheckTarget:
                 spawnAndDelete.CheckTarget();
-                Debug.Log("check");
                 State = States.DownNewBlock;
                 break;
             case States.DownNewBlock:
@@ -95,7 +47,6 @@ public class GameManager : MonoSingleton<GameManager>
                 State = States.Waiting;
                 break;
             case States.Waiting:
-                //Debug.Log("기달리는중");
                 break;
         }
     }

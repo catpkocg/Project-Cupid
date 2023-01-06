@@ -13,30 +13,15 @@ public class Map : MonoSingleton<Map>
     [SerializeField] private GameObject cam;
 
     public GameConfig Config;
-    
     public Block[,] matrix;
-
     public List<Vector2> matrixList;
-
-    public List<Vector2Int> deletedPos; 
-    
-    //public Text label;
-
-    public Canvas gridCanvas;
-
-    public Text label;
-    //AroundPosition six, Scriptable object
+    public List<Vector2Int> deletedPos;
     public AroundData aroundData;
-
-    //public event System.Action EditorRepaint = () => { };
-    
     public void Setup()
     {
         matrix = new Block[Config.GridSize.x, Config.GridSize.y];
         CreateHexGround();
-
     }
-    //배경 생성후 좌표 저장
     public void CreateHexGround()
     {
         var grid = GetComponent<Grid>();
@@ -50,13 +35,17 @@ public class Map : MonoSingleton<Map>
             }
         }
         
-        var widthCam = Config.GridSize.x / 2 * 0.75f;
-        var heightCam = Config.GridSize.y / 2 * 0.8659766f;
-        cam.transform.position = new Vector3(widthCam, heightCam, -20);
+        //12 - 4, 13 -4.5 , 14 - 5
+        var x = (Screen.width / 2);
+        var y = (Screen.height / 2);
         
-        var wantedWidthCamDist = Config.GridSize.x / 2f;
+        var widthCam = (Config.GridSize.y * 0.75f) / 2;
+        var heightCam = (Config.GridSize.x * 0.8659766f) / 2;
+        
+        cam.transform.position = new Vector3(widthCam-0.375f,heightCam,-20);
+        
+        var wantedWidthCamDist = Config.GridSize.y / 2f;
         Camera.main.orthographicSize = wantedWidthCamDist * (float)Screen.height / Screen.width;
-
     }
     
     private void CellBackGroundCreate(Grid grid, int x, int y)
@@ -68,28 +57,16 @@ public class Map : MonoSingleton<Map>
 
     public List<Block> FindAllNearSameValue(Block block)
     {
-        // 검색할 것들
-        // 검색한 것들
-        // 연결된 것들
         var toSearch = new List<Block>();
         var searched = new List<Block>();
         var allSameBlocks = new List<Block>();
-
-        // 검색의 시작점을 검색할 것들에 추가한다.
         toSearch.Add(block);
         allSameBlocks.Add(block);
-
         var tempCount = 0;
-        
-        // 검색할 것들이 없으면
         while (!toSearch.IsNullOrEmpty())
         {
-            // 검색:
-            // 검색할 것들의 첫번째 놈을 검색한다, 다음과 같이
             var currSearchTarget = toSearch[0];
-            // 검색의 대상을 설정한다.
             var sameBlocks = FindNearSameValue(currSearchTarget);
-            // 검색의 대상은 주변 6개 칸중 이미 연결됨을 알거나, 이미 검색했던 것을 제외한다.
             if (!sameBlocks.IsNullOrEmpty())
             {
                 for (var i = 0; i < sameBlocks.Count; i++)
@@ -97,21 +74,17 @@ public class Map : MonoSingleton<Map>
                     var currSameBlock = sameBlocks[i];
                     if (!searched.Contains(currSameBlock) && !toSearch.Contains(currSameBlock))
                     {
-                        // 연결된 것을 찾으면 연결된 것들에 추가한다.
-                        // 연결된 것을 찾으면 검색할 것들에 추가한다.
                         allSameBlocks.Add(currSameBlock);
                         toSearch.Add(currSameBlock);
                     }
                 }
             }
-            // 현재 검색중인 것의 검색이 끝나면 검색할 것들에서 빼준다.
             searched.Add(currSearchTarget);
             toSearch.Remove(currSearchTarget);
 
             if(500 < tempCount) break;
             tempCount++;
         }
-        // return 연결된 것들
         return allSameBlocks;
     }
     
@@ -123,7 +96,6 @@ public class Map : MonoSingleton<Map>
             if (block.Coord.y % 2 == 0)
             {
                 var neibor = block.Coord + aroundData.around[i].aroundOneCoord;
-                Debug.Log(neibor + " 이거 네이버");
                 if (Boundary(neibor))
                 {
                     var neiborValue = matrix[neibor.x, neibor.y];
@@ -149,33 +121,44 @@ public class Map : MonoSingleton<Map>
         }
         return sameBlockList;
     }
-
-    
-
     public bool Boundary(Vector2Int pos)
     {
         var width = Config.GridSize.x;
         var height = Config.GridSize.y;
-
-        
-        if (Config.GridSize.y % 2 == 0)
+        if((width % 2 == 0 && height % 2 == 0) || (width % 2 ==1 && height % 2 == 0))
         {
-            if (pos.x < 0 || pos.x > width || pos.y > height-1 || pos.y < 0)
+            if (Config.GridSize.y % 2 == 0)
             {
-                return false;
+                if (pos.x < 0 || pos.x >= width || pos.y >= height || pos.y < 0)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (pos.x < 0 || pos.x >= width-1 || pos.y >= height || pos.y < 0)
+                {
+                    return false;
+                }
             }
         }
         else
         {
-            if (pos.x < 0 || pos.x > width-1 || pos.y > height-1 || pos.y < 0)
+            if (Config.GridSize.y % 2 == 0)
             {
-                return false;
+                if (pos.x < 0 || pos.x >= width-1 || pos.y >= height || pos.y < 0)
+                {
+                    return false;
+                }
             }
-            
+            else
+            {
+                if (pos.x < 0 || pos.x >= width || pos.y >= height || pos.y < 0)
+                {
+                    return false;
+                }
+            }
         }
-        
-        
-
         return true;
     }
     

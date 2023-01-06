@@ -11,4 +11,5 @@ public class SceneFunctions : ScriptableObject
     
     public void LoadPlayScene() => SceneManager.LoadScene(playSceneName);
     public void LoadSettingScene() => SceneManager.LoadScene(settingSceneName);
+    public void ExitGame() => Application.Quit();
 }
