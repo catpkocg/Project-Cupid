@@ -24,20 +24,28 @@ public class GameManager : MonoSingleton<GameManager>
         if (Input.GetKeyDown(KeyCode.Space))
         {
             //Debug.Log(State);
-            Debug.Log(Map.Instance.Config.GridSize.x);
-            Debug.Log(Map.Instance.Config.GridSize.y);
+            //Debug.Log(Map.Instance.Config.GridSize.x);
+            //Debug.Log(Map.Instance.Config.GridSize.y);
             //Debug.Log(Map.Instance.matrix[0,1]);
-            for (int i = 0; i < Map.Instance.Config.GridSize.x; i++)
-            {
-                for (int j = 0; j < Map.Instance.Config.GridSize.y; j++)
-                {
-                    if (Map.Instance.Boundary(Map.Instance.matrix[i, j].Coord))
-                    {
-                        Debug.Log(i +"ddd" + j);
-                    }
-                }
-            }
-            
+            // for (int i = 0; i < Map.Instance.Config.GridSize.x; i++)
+            // {
+            //     for (int j = 0; j < Map.Instance.Config.GridSize.y; j++)
+            //     {
+            //         if (Map.Instance.Boundary(Map.Instance.matrix[i, j].Coord))
+            //         {
+            //             Debug.Log(i +"ddd" + j);
+            //         }
+            //     }
+            // }
+
+            Debug.Log(Map.Instance.Boundary(new Vector2Int(7, 4)));
+            Debug.Log(Map.Instance.Boundary(new Vector2Int(6, 3)));
+            Debug.Log(Map.Instance.Boundary(new Vector2Int(7, 2)));
+            Debug.Log(Map.Instance.Boundary(new Vector2Int(6, 1)));
+            Debug.Log(Map.Instance.Boundary(new Vector2Int(7, 0)));
+            Debug.Log(Map.Instance.Boundary(new Vector2Int(6, 5)));
+            Debug.Log(Map.Instance.Boundary(new Vector2Int(7, 6)));
+
         }
         
         if (Input.GetMouseButtonDown(1))

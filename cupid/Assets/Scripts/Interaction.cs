@@ -31,6 +31,7 @@ using System.Collections.Generic;
                 var grid = Map.Instance.GetComponent<Grid>();
                 var cellCoord = grid.WorldToCell(hitPoint);
                 Debug.Log(cellCoord);
+                Debug.Log(Map.Instance.Boundary(new Vector2Int(cellCoord.x, cellCoord.y)));
                 if (Map.Instance.Boundary(new Vector2Int(cellCoord.x, cellCoord.y)))
                 {
                     var clickedBlock = Map.Instance.matrix[cellCoord.x, cellCoord.y];

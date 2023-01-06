@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: SceneFunctions
   m_EditorClassIdentifier: 
   playSceneName: Play
-  settingSceneName: Settings
+  settingSceneName: Setting

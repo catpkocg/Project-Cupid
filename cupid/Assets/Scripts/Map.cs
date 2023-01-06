@@ -16,6 +16,8 @@ public class Map : MonoSingleton<Map>
     
     public Block[,] matrix;
 
+    public List<Vector2> matrixList;
+
     public List<Vector2Int> deletedPos; 
     
     //public Text label;
@@ -26,9 +28,11 @@ public class Map : MonoSingleton<Map>
     //AroundPosition six, Scriptable object
     public AroundData aroundData;
 
+    //public event System.Action EditorRepaint = () => { };
+    
     public void Setup()
     {
-        matrix = new Block[Config.GridSize.y, Config.GridSize.x];
+        matrix = new Block[Config.GridSize.x, Config.GridSize.y];
         CreateHexGround();
 
     }
@@ -37,15 +41,15 @@ public class Map : MonoSingleton<Map>
     {
         var grid = GetComponent<Grid>();
         
-        for (var j = 0; j < Config.GridSize.x; j++)
+        for (var j = 0; j < Config.GridSize.y; j++)
         {
-            var height = Config.GridSize.y + (j % 2 == 0 ? 0 : -1);
+            var height = Config.GridSize.x + (j % 2 == 0 ? 0 : -1);
             for (var i = 0; i < height; i++)
             {
                 CellBackGroundCreate(grid, i, j);
             }
         }
-
+        
         var widthCam = Config.GridSize.x / 2 * 0.75f;
         var heightCam = Config.GridSize.y / 2 * 0.8659766f;
         cam.transform.position = new Vector3(widthCam, heightCam, -20);
@@ -119,7 +123,7 @@ public class Map : MonoSingleton<Map>
             if (block.Coord.y % 2 == 0)
             {
                 var neibor = block.Coord + aroundData.around[i].aroundOneCoord;
-                
+                Debug.Log(neibor + " 이거 네이버");
                 if (Boundary(neibor))
                 {
                     var neiborValue = matrix[neibor.x, neibor.y];
@@ -151,12 +155,26 @@ public class Map : MonoSingleton<Map>
     public bool Boundary(Vector2Int pos)
     {
         var width = Config.GridSize.x;
-        var height = Config.GridSize.y + (Config.GridSize.y % 2 == 0 ? 0 : -1);
+        var height = Config.GridSize.y;
+
         
-        if (pos.x < 0 || pos.x > width || pos.y > height || pos.y < 0)
+        if (Config.GridSize.y % 2 == 0)
         {
-            return false;
+            if (pos.x < 0 || pos.x > width || pos.y > height-1 || pos.y < 0)
+            {
+                return false;
+            }
         }
+        else
+        {
+            if (pos.x < 0 || pos.x > width-1 || pos.y > height-1 || pos.y < 0)
+            {
+                return false;
+            }
+            
+        }
+        
+        
 
         return true;
     }

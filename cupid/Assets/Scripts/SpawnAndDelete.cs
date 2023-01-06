@@ -30,6 +30,7 @@ public class SpawnAndDelete : MonoBehaviour
             for (var i = 0; i < height; i++)
             {
                 SpawnRandomBlock(grid,i,j, Map.Instance.Config.BlockCount);
+                Map.Instance.matrixList.Add(new Vector2(i,j));
             }
         }
     }
@@ -39,10 +40,9 @@ public class SpawnAndDelete : MonoBehaviour
         newBlocks = new List<Block>();
         newBlocksPos = new List<Vector2Int>();
         var grid = Map.Instance.GetComponent<Grid>();
-        var deletedPos = Map.Instance.deletedPos;
-        for (var j = 0; j < Map.Instance.Config.GridSize.x; j++)
+        for (var j = 0; j < Map.Instance.Config.GridSize.y; j++)
         {
-            var height = Map.Instance.Config.GridSize.y + (j % 2 == 0 ? 0 : -1);
+            var height = Map.Instance.Config.GridSize.x + (j % 2 == 0 ? 0 : -1);
             var currentLineNullNum = CalCuNullNum(new Vector2Int(height, j));
             for (var i = 0; i < currentLineNullNum; i++)
             {
@@ -55,7 +55,7 @@ public class SpawnAndDelete : MonoBehaviour
                 //Debug.Log(new Vector2Int((7+i) - currentLineNullNum,j) + " 짝수일때");
                 //Debug.Log(currentLineNullNum);
             }
-            }
+        }
     }
 
     public void CheckTarget()
